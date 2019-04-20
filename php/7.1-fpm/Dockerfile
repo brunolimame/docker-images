@@ -1,4 +1,4 @@
-FROM php:7.1-fpm
+FROM php:7.1-fpm-stretch
 MAINTAINER eu@brunolima.me
 
 RUN apt-get update && apt-get -y upgrade && apt-get -y dist-upgrade
@@ -8,7 +8,7 @@ RUN apt-get install -y --no-install-recommends \
     libz-dev \
     libpq-dev \
     libjpeg-dev \
-    libpng12-dev \
+    libpng-dev \
     libfreetype6-dev \
     libicu-dev \
     libssl-dev \
