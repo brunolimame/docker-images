@@ -16,7 +16,7 @@ RUN apt-get install -y --no-install-recommends \
     docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr && \
     docker-php-ext-install gd mysqli opcache intl
 
-RUN apt-get install -y vim git
+RUN apt-get install -y vim git wget
 # Some basic extensions
 RUN docker-php-ext-install -j$(nproc) json mbstring pdo pdo_mysql mysqli
 
@@ -59,3 +59,14 @@ RUN docker-php-ext-install -j$(nproc) zip
 RUN pecl install mongodb-1.5.3
 RUN docker-php-ext-install bcmath
 RUN echo "extension=mongodb.so" >> /usr/local/etc/php/conf.d/mongodb.ini
+
+#swoole install
+RUN cd /tmp && wget https://pecl.php.net/get/swoole-4.3.3.tgz && \
+    tar zxvf swoole-4.3.3.tgz && \
+    cd swoole-4.3.3  && \
+    phpize  && \
+    ./configure  --enable-openssl && \
+    make && make install
+
+RUN touch /usr/local/etc/php/conf.d/swoole.ini && \
+    echo 'extension=swoole.so' > /usr/local/etc/php/conf.d/swoole.ini
