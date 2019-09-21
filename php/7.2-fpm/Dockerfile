@@ -1,4 +1,4 @@
-FROM php:7.2-fpm
+FROM php:7.2.22-fpm
 MAINTAINER eu@brunolima.me
 
 RUN apt-get update && apt-get -y upgrade && apt-get -y dist-upgrade
