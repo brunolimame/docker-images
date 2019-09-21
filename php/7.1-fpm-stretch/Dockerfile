@@ -1,4 +1,4 @@
-FROM php:7.1-fpm-stretch
+FROM php:7.1.32-fpm-stretch
 MAINTAINER eu@brunolima.me
 
 RUN apt-get update && apt-get -y upgrade && apt-get -y dist-upgrade
