@@ -1,6 +1,5 @@
-FROM phpdockerio/php71-fpm:latest
+FROM phpdockerio/php56-fpm:latest
 MAINTAINER eu@brunolima.me
-
 WORKDIR "/application"
 
 # Fix debconf warnings upon build
@@ -8,7 +7,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 # Install selected extensions and other stuff
 RUN apt-get update \
-    && apt-get -y --no-install-recommends install  php7.1-mysql php7.1-pgsql php-redis php7.1-sqlite3 php7.1-bcmath php7.1-bz2 php7.1-dba php7.1-enchant php7.1-gd php7.1-gmp php-igbinary php-imagick php7.1-interbase php7.1-intl php-mongodb php7.1-odbc php7.1-phpdbg php7.1-pspell php-raphf php7.1-snmp php7.1-soap php-ssh2 php7.1-tidy php7.1-xmlrpc php7.1-xsl php-yaml php-xhprof php-zmq \
+    && apt-get -y --no-install-recommends install  php5-mongo php5-mysql php5-pgsql php5-redis php5-sqlite php5-adodb php5-enchant php5-exactimage php5-gd php5-gearman php5-geos php5-gmp php5-geoip php5-gnupg php5-pecl-http php5-igbinary php5-imap php5-imagick php5-ldap php5-libvirt-php php5-radius php5-pspell php5-ssh2 php5-twig php5-xdebug php5-xmlrpc php5-xsl \
     && apt-get clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
 
 # Install git
