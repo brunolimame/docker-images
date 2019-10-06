@@ -1,72 +1,16 @@
-FROM php:7.2.22-fpm
+FROM phpdockerio/php72-fpm:latest
 MAINTAINER eu@brunolima.me
+WORKDIR "/application"
 
-RUN apt-get update && apt-get -y upgrade && apt-get -y dist-upgrade
+# Fix debconf warnings upon build
+ARG DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get install -y --no-install-recommends \
-    libmemcached-dev \
-    libz-dev \
-    libpq-dev \
-    libjpeg-dev \
-    libpng-dev \
-    libfreetype6-dev \
-    libicu-dev \
-    libssl-dev \
-    libmcrypt-dev && \
-    docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr && \
-    docker-php-ext-install gd mysqli opcache intl
+# Install selected extensions and other stuff
+RUN apt-get update \
+    && apt-get -y --no-install-recommends install  php7.2-mysql php7.2-pgsql php-redis php7.2-sqlite3 php-xdebug php7.2-dba php7.2-enchant php7.2-gd php-gearman php7.2-gmp php-igbinary php-imagick php7.2-imap php7.2-interbase php7.2-intl php7.2-ldap php-mongodb php-msgpack php7.2-odbc php7.2-phpdbg php7.2-pspell php7.2-snmp php7.2-soap php-ssh2 php7.2-sybase php7.2-xmlrpc php7.2-xsl php-yaml \
+    && apt-get clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
 
-RUN apt-get install -y vim git wget
-# Some basic extensions
-RUN docker-php-ext-install -j$(nproc) json mbstring pdo pdo_mysql mysqli
-
-# Curl
-RUN apt-get install -y libcurl4-openssl-dev
-RUN docker-php-ext-install -j$(nproc) curl
-
-# GD
-RUN apt-get install -y libpng-dev libjpeg-dev
-RUN docker-php-ext-install -j$(nproc) gd
-
-# Intl
-RUN apt-get install -y libicu-dev
-RUN docker-php-ext-install -j$(nproc) intl
-
-# Memcached
-RUN curl -L -o /tmp/memcached.tar.gz "https://github.com/php-memcached-dev/php-memcached/archive/php7.tar.gz" && \
-mkdir -p memcached && \
-tar -C memcached -zxvf /tmp/memcached.tar.gz --strip 1 && \
-( \
-    cd memcached && \
-    phpize && \
-    ./configure && \
-    make -j$(nproc) && \
-    make install \
-) && \
-rm -r memcached && \
-rm /tmp/memcached.tar.gz && \
-docker-php-ext-enable memcached
-
-# Composer install
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-RUN composer self-update
-
-#Zip install
-RUN apt-get install -y zlib1g-dev
-RUN docker-php-ext-install -j$(nproc) zip
-
-#mongodb driver
-RUN pecl install mongodb-1.5.3
-RUN docker-php-ext-install bcmath
-RUN echo "extension=mongodb.so" >> /usr/local/etc/php/conf.d/mongodb.ini
-
-#swoole install
-RUN cd /tmp && wget https://pecl.php.net/get/swoole-4.3.3.tgz && \
-    tar zxvf swoole-4.3.3.tgz && \
-    cd swoole-4.3.3  && \
-    phpize  && \
-    ./configure  --enable-openssl && \
-    make && make install
-
-RUN touch /usr/local/etc/php/conf.d/swoole.ini && \
-    echo 'extension=swoole.so' > /usr/local/etc/php/conf.d/swoole.ini
+# Install git
+RUN apt-get update \
+    && apt-get -y install git \
+    && apt-get clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
